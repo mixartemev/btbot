@@ -29,7 +29,7 @@ def links() -> str:
     return link
 
 
-if __name__ == '__main__':
+def send():
     from_adr = 'BT Bot <{}>'.format(os.getenv('SMTP_FROM'))
     to_adr = 'BT Client <{}>'.format(os.getenv('STMP_TO'))
     message = """From: %s 
@@ -45,6 +45,11 @@ Subject: BT Rate
         with smtplib.SMTP(os.getenv('SMTP_HOST'), os.getenv('SMTP_PORT')) as server:
             server.login(os.getenv('SMTP_USER'), os.getenv('SMTP_PWD'))
             server.sendmail(from_adr, to_adr, message)
-            print('Successfully sent email')
+            server.close()
+            return True
     except smtplib.SMTPException:
-        print('Error: unable to send email')
+        return False
+
+
+if __name__ == '__main__':
+    print(send())
