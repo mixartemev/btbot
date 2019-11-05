@@ -1,6 +1,8 @@
 import requests
 import smtplib
-from envs.cli import env
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def get_list() -> (float, list):
@@ -28,8 +30,8 @@ def links() -> str:
 
 
 if __name__ == '__main__':
-    from_adr = 'BT Bot <rate@btbot.ru>'
-    to_adr = 'BT Client <the_mix@mail.ru>'
+    from_adr = 'BT Bot <{}>'.format(os.getenv('SMTP_FROM'))
+    to_adr = 'BT Client <{}>'.format(os.getenv('STMP_TO'))
     message = """From: %s 
 To: %s
 MIME-Version: 1.0
@@ -40,8 +42,8 @@ Subject: BT Rate
 """ % (from_adr, to_adr, links())
     message = message.encode("ascii", errors="ignore")
     try:
-        with smtplib.SMTP(env('SMTP_HOST', 'smtp.mailtrap.io'), env('SMTP_PORT', var_type='integer')) as server:
-            server.login(env('SMTP_USER'), env('SMTP_PWD'))
+        with smtplib.SMTP(os.getenv('SMTP_HOST'), os.getenv('SMTP_PORT')) as server:
+            server.login(os.getenv('SMTP_USER'), os.getenv('SMTP_PWD'))
             server.sendmail(from_adr, to_adr, message)
             print('Successfully sent email')
     except smtplib.SMTPException:
