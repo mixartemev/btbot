@@ -41,15 +41,12 @@ Subject: BT Rate
 %s
 """ % (from_adr, to_adr, links())
     message = message.encode("ascii", errors="ignore")
-    try:
-        with smtplib.SMTP(os.getenv('SMTP_HOST'), os.getenv('SMTP_PORT')) as server:
-            server.login(os.getenv('SMTP_USER'), os.getenv('SMTP_PWD'))
-            server.sendmail(from_adr, to_adr, message)
-            server.close()
-            return True
-    except smtplib.SMTPException:
-        return False
+    with smtplib.SMTP(os.getenv('SMTP_HOST'), os.getenv('SMTP_PORT')) as server:
+        server.ehlo()  # optional
+        server.starttls()  # optional
+        server.login(os.getenv('SMTP_USER'), os.getenv('SMTP_PWD'))
+        server.sendmail(from_adr, to_adr, message)
 
 
 if __name__ == '__main__':
-    print(send())
+    send()
