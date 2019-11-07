@@ -2,6 +2,10 @@ import requests
 import smtplib
 import os
 from dotenv import load_dotenv
+
+from models.history import History
+from db import session  # after model load
+
 load_dotenv()
 
 
@@ -10,7 +14,14 @@ def get_list() -> (float, list):
     d: list = list(filter(lambda e: e['coin'] == 'pzm' and e['currency'] == 'rub', d))
     d: list = sorted(d, key=lambda e: e['price_advert'])[:5]
     best = d[0]['price_advert']
-    return best, d
+    old_best = float(session.query(History).order_by(History.stamp.desc()).first().rate)
+    if not best == old_best:
+        session.add(History(rate=best))
+        session.commit()
+        if best < old_best:
+            return best, d
+    print('no change')
+    exit()
 
 
 def links() -> str:
@@ -46,7 +57,7 @@ Subject: BT Rate
         server.starttls()  # optional
         server.login(os.getenv('SMTP_USER'), os.getenv('SMTP_PWD'))
         server.sendmail(from_adr, to_adr, message)
-
+    print('sent ok')
 
 if __name__ == '__main__':
     send()

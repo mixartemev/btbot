@@ -8,6 +8,5 @@ class History(Base):
     stamp = Column(DateTime, primary_key=True, default=func.now())
     rate = Column(DECIMAL(5, 2))
 
-    def __init__(self, stamp, rate):
-        self.stamp = stamp
+    def __init__(self, rate):
         self.rate = rate
