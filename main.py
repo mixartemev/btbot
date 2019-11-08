@@ -20,7 +20,10 @@ def get_list() -> (float, list):
         session.commit()
         if best < old_best:
             return best, d
-    print('no change')
+        else:
+            print('no decrease')
+    else:
+        print('no change')
     exit()
 
 
