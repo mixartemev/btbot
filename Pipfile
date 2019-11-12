@@ -8,6 +8,7 @@ requests = "*"
 python-dotenv = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
+python-telegram-bot = "*"
 
 [dev-packages]
 
